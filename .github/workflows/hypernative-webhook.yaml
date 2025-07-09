@@ -25,7 +25,7 @@ jobs:
           CHAIN="${{ github.event.client_payload.chain_id }}"
           TOKEN="${{ github.event.client_payload.token_address }}"
           PROTOCOL_VERSION="2"
-          REASON="frontrun"
+          REASON="erc20 frontrun"
           
           # Add new entry to the file
           echo "${CHAIN},${TOKEN,,},${PROTOCOL_VERSION},${REASON}" >> tokens/blocked.csv
