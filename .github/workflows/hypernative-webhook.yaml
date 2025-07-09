@@ -18,16 +18,17 @@ jobs:
         run: |
           # Create file with header if it doesn't exist
           if [ ! -f tokens/blocked.csv ]; then
-            echo "chain_id,token_address,protocol_version" > tokens/blocked.csv
+            echo "chain_id,token_address,protocol_version,reason" > tokens/blocked.csv
           fi
           
           # Extract data from payload
           CHAIN="${{ github.event.client_payload.chain_id }}"
           TOKEN="${{ github.event.client_payload.token_address }}"
           PROTOCOL_VERSION="2"
+          REASON="frontrun"
           
           # Add new entry to the file
-          echo "${CHAIN},${TOKEN,,},${PROTOCOL_VERSION}" >> tokens/blocked.csv
+          echo "${CHAIN},${TOKEN,,},${PROTOCOL_VERSION},${REASON}" >> tokens/blocked.csv
           echo "changes_made=true" >> $GITHUB_OUTPUT
       - name: Commit changes
         if: steps.update-csv.outputs.changes_made == 'true'
@@ -35,6 +36,6 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add tokens/blocked.csv
-          git commit -m "Add token to blocklist: ${{ github.event.client_payload.token_address }} (protocol v2)"
+          git commit -m "Add token to blocklist: ${{ github.event.client_payload.token_address }} (protocol v2, reason: frontrun)"
           git pull --rebase
           git push
